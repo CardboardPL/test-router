@@ -46,4 +46,38 @@ export class RouterTree extends Tree {
 
         return super.appendChild(parent, { data, segmentName });
     }
+
+    removePath(absPath) {
+        const node = this.findSegmentNode(absPath);
+        if (!node) throw new Error(`No node found for path: ${absPath}`);
+        this.deleteSubtree(node.data.id);
+    }
+
+    findSegmentNode(absPath) {
+        const absPathType = typeof absPath;
+        if (absPathType !== 'string') throw new Error(`Passed an invalid data type. Expected "absPath" to be of type "string" but received a type of ${absPathType}`);
+
+        if (!this.root) return null;
+        
+        // Normalize Path
+        absPath = absPath.trim();
+        if (absPath[0] === '/') {
+            absPath = absPath.substring(1);
+        }
+        if (absPath[absPath.length - 1] === '/') {
+            absPath = absPath.substring(0, absPath.length - 1);
+        }
+
+        const segments = absPath.trim().split('/');
+        let current = this.root;
+        for (const segment of segments) {
+            if (!segment) throw new Error('Invalid path. Path has duplicate slashes (/)');
+
+            current = current.data.data.map.get(segment);
+
+            if (!current) return null;
+        }
+
+        return current;
+    }
 }
