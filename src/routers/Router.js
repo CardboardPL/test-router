@@ -1,4 +1,4 @@
-import { RouterTree } from './../data-structures/RouterTree.js';
+import { RouterTree } from './RouterTree.js';
 
 export class Router {
     #navTree
