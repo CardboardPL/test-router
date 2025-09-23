@@ -1,4 +1,4 @@
-import { Tree } from './../../../Data Structures/Trees/Tree.js';
+import { Tree } from './../data-structures/Tree.js';
 
 export class RouterTree extends Tree {
     constructor(root) {
