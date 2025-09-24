@@ -5,9 +5,9 @@ export class Router {
     #navTree;
     #renderer;
 
-    constructor(rootElem, rootHTML) {
+    constructor(rootElem, rootHTML, fallbackHTML) {
         this.#navTree = new RouterTree(rootHTML);
-        this.#renderer = new RouterRenderer(rootElem, this);
+        this.#renderer = new RouterRenderer(rootElem, this, fallbackHTML);
     }
 
     addPath(segment, absParentNode, segmentHTML) {
@@ -23,7 +23,7 @@ export class Router {
     }
 
     getNodeContent(node) {
-        if (!node.data || !node.data.data || !node.data.data.data) return null; 
+        if (!node || !node.data || !node.data.data || !node.data.data.data) return null; 
         return node.data.data.data;
     }
 
@@ -37,10 +37,6 @@ export class Router {
 
     navigateTo(absPath, data) {
         const renderResult = this.#renderer.renderPathMain(absPath);
-        console.log(renderResult)
-        if (!renderResult.segmentHTML) {
-            this.#renderer.renderPathMain('404');
-        }
-        history.pushState(data, '', renderResult.absPath ? renderResult.absPath : '/404');
+        history.pushState(data, '', renderResult.absPath);
     }
 }
