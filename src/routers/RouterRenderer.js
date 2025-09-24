@@ -12,7 +12,9 @@ export class RouterRenderer {
     }
 
     renderPathMain(absPath) {
-        this.#main.innerHTML = this.router.getSegmentHTML(absPath);
+        const segmentHTML = this.router.getSegmentHTML(absPath);
+        this.#main.innerHTML = segmentHTML;
+        return { absPath, segmentHTML };
     }
 
     renderPathElement(absPath, element) {
