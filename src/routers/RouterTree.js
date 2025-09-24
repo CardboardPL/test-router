@@ -1,15 +1,21 @@
-import { Tree } from './../data-structures/Tree.js';
+import { Node } from '../data-structures/LinkedList.js';
+import { Tree, TreeNode } from './../data-structures/Tree.js';
 
 export class RouterTree extends Tree {
-    constructor(root) {
-        super(root, 0)
+    constructor(rootHTML) {
+        const rootNode = new Node(null, null, {
+            id: 0, data: new TreeNode(null, { data: rootHTML, segmentName: '' })
+        });
+        super(rootNode);
     }
 
     insertParentAboveWithSegment(node, data, segmentName) {
         segmentName = segmentName.trim().toLowerCase();
+        if (segmentName.includes('/')) throw new Error('Segment name must not have a "/"');
         if (!segmentName) throw new Error('Invalid segment name');
 
         const parentNode = node.data.data.parent;
+        const newNodeId = super.insertParentAbove(node, { data, segmentName });
 
         if (parentNode) {
             const parentNodeData = parentNode.data.data;
@@ -21,14 +27,15 @@ export class RouterTree extends Tree {
                 throw new Error('Passed an existing segment name in the current level');
             }
 
-            parentNodeData.map.set(segmentName, data);
+            parentNodeData.map.set(segmentName, super.retrieveNode(newNodeId));
         }
 
-        return super.insertParentAbove(node, { data, segmentName });
+        return newNodeId;
     }
 
     addChildSegment(parent, data, segmentName) {
         segmentName = segmentName.trim().toLowerCase();
+        if (segmentName.includes('/')) throw new Error('Segment name must not have a "/"');
         if (!segmentName) throw new Error('Invalid segment name');
 
         if (!parent) throw new Error('Passed a parent that doesn\'t exist');
@@ -42,9 +49,12 @@ export class RouterTree extends Tree {
             throw new Error('Passed an existing segment name in the current level');
         }
 
-        parentData.map.set(segmentName, data);
+        const newNodeId = super.appendChild(parent, { data, segmentName });
+        const newNode = super.retrieveNode(newNodeId);
 
-        return super.appendChild(parent, { data, segmentName });
+        parentData.map.set(segmentName, newNode);
+
+        return newNodeId;
     }
 
     removePath(absPath) {
@@ -56,6 +66,7 @@ export class RouterTree extends Tree {
     findSegmentNode(absPath) {
         const absPathType = typeof absPath;
         if (absPathType !== 'string') throw new Error(`Passed an invalid data type. Expected "absPath" to be of type "string" but received a type of ${absPathType}`);
+        if (absPath === '/') return this.root;
 
         if (!this.root) return null;
         
