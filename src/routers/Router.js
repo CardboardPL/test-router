@@ -1,10 +1,13 @@
 import { RouterTree } from './RouterTree.js';
+import { RouterRenderer } from './RouterRenderer.js';
 
 export class Router {
-    #navTree
+    #navTree;
+    #renderer;
 
-    constructor(root) {
-        this.#navTree = new RouterTree(root);
+    constructor(rootElem, rootHTML) {
+        this.#navTree = new RouterTree(rootHTML);
+        this.#renderer = new RouterRenderer(rootElem, this);
     }
 
     addPath(segment, absParentNode, segmentHTML) {
@@ -19,9 +22,25 @@ export class Router {
         return this.#navTree.removePath(absPath);
     }
 
+    getNodeContent(node) {
+        if (!node.data || !node.data.data || !node.data.data.data) return null; 
+        return node.data.data.data;
+    }
+
     getSegmentHTML(absPath) {
         const node = this.findSegmentNode(absPath);
-        if (!node) throw new Error(`No segment found for path: ${absPath}`);
-        return node.data.data.data;
+        const nodeContent = this.getNodeContent(node);
+        return nodeContent ? 
+            (nodeContent.data == null ? null : nodeContent.data) : 
+            null;
+    }
+
+    navigateTo(absPath, data) {
+        const renderResult = this.#renderer.renderPathMain(absPath);
+        console.log(renderResult)
+        if (!renderResult.segmentHTML) {
+            this.#renderer.renderPathMain('404');
+        }
+        history.pushState(data, '', renderResult.absPath ? renderResult.absPath : '/404');
     }
 }
