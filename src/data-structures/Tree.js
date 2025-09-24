@@ -11,7 +11,7 @@ export class Tree {
         this.#map = new Map();
 
         if (this.root) {
-            if (!this.root.data || !this.root.data.id) throw new Error('Invalid root node: missing id');
+            if (!this.root.data || this.root.data.id == null || typeof this.root.data.id !== 'number') throw new Error('Invalid root node: missing id');
             const rootId = this.root.data.id;
             this.#counter = rootId + 1;
             this.#map.set(rootId, this.root);
