@@ -8,6 +8,12 @@ export class Router {
     constructor(rootElem, rootHTML, fallbackHTML) {
         this.#navTree = new RouterTree(rootHTML);
         this.#renderer = new RouterRenderer(rootElem, this, fallbackHTML);
+
+        window.addEventListener('popstate', (e) => {
+            if (!e.state.called) {
+                this.#renderer.renderPathMain(window.location.pathname);
+            }
+        });
     }
 
     addPath(segment, absParentNode, segmentHTML) {
@@ -38,5 +44,6 @@ export class Router {
     navigateTo(absPath, data) {
         const renderResult = this.#renderer.renderPathMain(absPath);
         history.pushState(data, '', renderResult.absPath);
+        window.dispatchEvent(new PopStateEvent('popstate', { state: { called: true, data } }));
     }
 }
