@@ -66,7 +66,7 @@ export class RouterTree extends Tree {
     findSegmentNode(absPath) {
         const absPathType = typeof absPath;
         if (absPathType !== 'string') throw new Error(`Passed an invalid data type. Expected "absPath" to be of type "string" but received a type of ${absPathType}`);
-        if (absPath === '/') return this.root;
+        if (absPath === '/' || absPath === '') return this.root;
 
         if (!this.root) return null;
         
