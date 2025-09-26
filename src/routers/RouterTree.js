@@ -22,9 +22,7 @@ export class RouterTree extends Tree {
             const parentNodeData = parentNode.data.data;
             if (!parentNodeData.map) {
                 parentNodeData.map = new Map();
-            }
-
-            if (parentNodeData.map.has(segmentName)) {
+            } else if (parentNodeData.map.has(segmentName)) {
                 throw new Error('Passed an existing segment name in the current level');
             }
 
@@ -44,9 +42,7 @@ export class RouterTree extends Tree {
         const parentData = parent.data.data;
         if (!parentData.map) {
             parentData.map = new Map();
-        }
-
-        if (parentData.map.has(segmentName)) {
+        } else if (parentData.map.has(segmentName)) {
             throw new Error('Passed an existing segment name in the current level');
         }
 
