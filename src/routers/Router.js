@@ -8,6 +8,7 @@ export class Router {
     constructor(rootElem, rootHTML, fallbackHTML) {
         this.#navTree = new RouterTree(rootHTML);
         this.#renderer = new RouterRenderer(rootElem, this, fallbackHTML);
+        this.navigateTo(window.location.pathname);
 
         window.addEventListener('popstate', (e) => {
             if (!e.state.called) {
