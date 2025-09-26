@@ -6,6 +6,7 @@ export class RouterTree extends Tree {
         const rootNode = new Node(null, null, {
             id: 0, data: new TreeNode(null, { data: rootHTML, segmentName: '' })
         });
+        rootNode.data.data.map = new Map();
         super(rootNode);
     }
 
